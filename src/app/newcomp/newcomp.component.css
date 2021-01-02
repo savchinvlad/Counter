@@ -1,0 +1,81 @@
+.row:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+  .row { display: inline-block; }
+
+* html .row { height: 1%; }
+.row { display: block; }
+
+  
+.timer {
+    background: blue;
+    height: 160px;
+    width: 70%;
+    float: left;
+    font-size: 9rem;
+}
+
+.timerResult {
+    background: cadetblue; 
+    height: 160px;
+    float: left;
+    width: 30%;
+}
+
+.buttonCont {
+    background: pink;
+    height: 105px;
+    width: 100%;
+}
+
+span {
+    text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    background: greenyellow;
+    color: #333;
+    padding: .4rem 1.3rem;
+    font-size: 5rem;
+    border: none;
+    cursor: pointer;
+    margin-right: .5rem;
+    transition: opacity .2s;
+    outline: none;
+   
+}
+
+.btn:hover {background-color: #3e8e41}
+
+.btnWait {
+    display: inline-block;
+    background: greenyellow;
+    color: #333;
+    padding: .4rem 1.3rem;
+    font-size: 5rem;
+    border: none;
+    cursor: pointer;
+    margin-right: .5rem;
+    transition: opacity .2s;
+    outline: none;
+    border-radius: 50%;
+}
+
+.btnWait:hover {background-color: #3e8e41}
+
+.btnWait:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+h1 {
+font-size: 70;
+}
+
