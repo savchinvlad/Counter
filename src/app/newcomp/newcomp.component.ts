@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, interval, Subscription, fromEvent } from 'rxjs';
-import { map, filter, buffer, debounceTime } from 'rxjs/operators'
+import { Observable, interval, fromEvent } from 'rxjs';
+import { map, filter, buffer, debounceTime, scan } from 'rxjs/operators'
 
 @Component({
   selector: 'app-newcomp',
@@ -8,45 +8,45 @@ import { map, filter, buffer, debounceTime } from 'rxjs/operators'
   styleUrls: ['./newcomp.component.css']
 })
 export class NewcompComponent implements OnInit {
-  startTimer = 0;
   currentValue = '00:00:00';
-  timerValue ;
-  private currentSubscription: Subscription;
+  timerSubscription;
   button = document.getElementsByClassName('btnWait');
   isStart = true;
+  currenTimerValue = 0;
 
   constructor() { }
 
   ngOnInit(): void {
 
     const btnStrem$: Observable<Event> = fromEvent(this.button, 'click');
-    const buff$ = btnStrem$.pipe(debounceTime(250));
+    const buff$ = btnStrem$.pipe(debounceTime(300));
 
     const click$ = btnStrem$.pipe(
       buffer(buff$),
       map(list => {
         return list.length;
       }),
-      filter(x => x ===2 ));
+      filter(x => x === 2));
 
     click$.subscribe(() => {
       this.wait()
     });
-  }
+  };
 
   start() {
     this.isStart = !this.isStart;
    
-    const strem$: Observable<number> = interval(1000)
-
-    this.currentSubscription = strem$.subscribe(v => {
-      this.startTimer += 1;
-      this.currentValue = this.formatValue(this.startTimer)});
+    this.timerSubscription = interval(1000)
+    .pipe(
+      scan(count => count + 1, this.currenTimerValue))
+    .subscribe(v => {
+      this.currenTimerValue = v;
+      this.currentValue = this.formatValue(v)});
   };
 
-   private formatValue(v) {
+   public formatValue(v) {
 
-    const hourse = Math.floor(v / 600);
+    const hourse = Math.floor(v / 3600);
     const formattedHourse = '' + (hourse > 9 ? hourse : '0' + hourse);
     const minutes = Math.floor(v / 60);
     const formattedMinutes = '' + (minutes > 9 ? minutes : '0' + minutes);
@@ -54,30 +54,35 @@ export class NewcompComponent implements OnInit {
     const formattedSeconds = '' + (seconds > 9 ? seconds : '0' + seconds);
 
     return `${formattedHourse}:${formattedMinutes}:${formattedSeconds}`;
-}
+
+  };
 
    stop() {
 
     this.isStart = !this.isStart;
-    this.startTimer = 0;
-    this.currentValue = '00:00:00';
-    this.currentSubscription.unsubscribe();
 
-};
+    this.currentValue = '00:00:00';
+    this.timerSubscription.unsubscribe();
+    this.currenTimerValue = 0;
+
+  };
 
    reset() {
+     
+    this.isStart = !this.isStart;
 
-    this.startTimer = 0;
+    this.currenTimerValue = 0;
     this.currentValue = '00:00:00';
-    this.currentSubscription.unsubscribe();
+    this.timerSubscription.unsubscribe();
     this.start();
 
-  }
+  };
 
    wait() {
 
    this.isStart = !this.isStart;
-   this.currentSubscription.unsubscribe();
 
-  }
+   this.timerSubscription.unsubscribe();
+   
+  };
 }
